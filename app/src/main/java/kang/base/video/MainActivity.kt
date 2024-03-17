@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity() {
                 progressBar?.max = player.duration.toInt()
                 progressBar!!.progress = currentPosition
                 progressBar!!.secondaryProgress = bufferedPosition
+
+                convertMillisecondsToTimeFormat(player.duration)
             }
             handler.postDelayed(this, 1000) // 每隔一秒执行一次
         }
@@ -59,6 +61,18 @@ class MainActivity : AppCompatActivity() {
         // 初始化进度条
         progressBar = findViewById(R.id.seekBar);
         // 设置进度条的最大值
+        progressBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+                "onStopTrackingTouch ${seekBar?.progress}".log()
+            }
+        })
 
         player= ExoPlayer.Builder(applicationContext)
             .setMediaSourceFactory(factory)
@@ -101,6 +115,19 @@ class MainActivity : AppCompatActivity() {
     private fun String.log(){
 
         Log.d("MainActivity",this)
+    }
+    fun convertMillisecondsToTimeFormat(milliseconds: Long) {
+        val seconds = milliseconds / 1000
+        val minutes = seconds / 60
+      //  val hours = minutes / 60
+
+        val remainingSeconds = seconds % 60
+
+        String.format(
+            "%02d:%02d",
+            minutes,
+            remainingSeconds
+        ).log()
     }
 }
 
